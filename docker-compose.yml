@@ -1,0 +1,62 @@
+# Define the version of file yml see more information on https://docs.docker.com/v1.8/compose/yml/
+version: "2"
+# Define the services place
+services:
+  # Here we named our service, I typed web, however we could call any name, as long as there is :
+  web:
+    # container_name is to identify our container. eg. docker-compose ps
+    container_name: docker-apache-php
+    # in the build setting, we do not use image directly, but a Dockerfile previously configured.
+    build: .
+    # as we type dot after build: instruction, the Dockerfile default is loaded.
+    # the dockerfile, we can identifiy the Dockerfile with other name. eg. DockerfileWebserverPHPApache,
+    # it work well when we have several containers. We can create a folder to put Dockerfiles.
+    # In this case I didn’t specifiy, because in root folder we have a Dockerfile default name
+    # then it will load.
+    # dockerfile: Dockerfile-alternate
+    # image: php:5.4-apache
+    # in ports, we can redirect and open the ports between host and container,
+    # below we are showing that if we access the port 8889 in host, we will redirected to port 80 in container.
+    ports:
+      - 80:80
+    # We share the workspace of our host with any folder within the container.
+    # below we are showing that in the container, the folder /var/www/html is a link to local folder ./www.
+    # sintaxe: — localfolder:containerfolder
+    # if you need share your root folder app, you may need to put like this: .:/var/www/html
+    volumes:
+      - ../sites:/var/www/html
+    # in links, we relate to the containers.
+    # in this case, we relate db, because we need to access the mysql from this container
+    # sintaxe: — servicename
+    # we could relate the service name with an alias, however this alias should be defined in /etc/hosts within the container
+    # Like this: service:alias or db:mysql-server provide that the db container has /etc/hosts configured as mysql-server
+    links:
+      - db
+    # Here we have other service/container, the db, the database mysql
+
+  db:
+    # container_name is to identify our container. eg. docker-compose ps
+    container_name: docker-mysql
+    # here we use the build to import other Dockerfile, to facilitate the importation of our mysql database
+    build:
+      # context, specifies the folder of this Dockerfile
+      context: ./
+      # Here we type the Dockerfile name.
+      dockerfile: DockerfileDB
+    # We share the workspace of our host with any folder within the container.
+    # sintaxe: — localfolder:containerfolder
+    # alternatively we can use at the end the third parameter, the access mode eg. :ro (read only)
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    # in ports, we want to expose the port 3306 of this container, to access the mysql through host machine
+    # below we type the host port 3307 to access mysql through container port 3306
+    ports:
+      - 3306:3306
+
+    # environment we set the environment variables to this container
+    environment:
+      # below some variables to mysql connect.
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: db_test
