@@ -1,5 +1,5 @@
 # Define the version of file yml see more information on https://docs.docker.com/v1.8/compose/yml/
-version: "2"
+version: "2.1"
 # Define the services place
 services:
   # Here we named our service, I typed web, however we could call any name, as long as there is :
