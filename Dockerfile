@@ -6,10 +6,10 @@ FROM php:5.6-apache
 # In MAINTAINER we can specify the creator and that keeps this dockerfile version.
 MAINTAINER Santiago Benalcazar <santiagosdbc@gmail.com>
 # Maybe you want to install intl then
-RUN apt-get update && apt-get install -y zlib1g-dev libicu-dev g++ nano build-essential zip unzip
+RUN apt-get update && apt-get install -y apt-utils zlib1g-dev libicu-dev g++ nano build-essential zip unzip zlib1g-dev curl libmcrypt-dev libreadline-dev libpng12-dev
 # The RUN allows to execute commands within the container, the docker-php-ext-install installs PHP extensions within the container.
 # You can also add after other extensions desired.
-RUN docker-php-ext-install mysql mysqli pdo pdo_mysql zip
+RUN docker-php-ext-install mysql mysqli pdo pdo_mysql zip mcrypt
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl
 # And mbstring you may need
@@ -28,7 +28,7 @@ RUN php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60e
 RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 RUN php -r "unlink('composer-setup.php');"
 # NodeJS
-RUN curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash
 RUN apt-get install -y nodejs
 # Gulp
 RUN npm install --global gulp-cli
