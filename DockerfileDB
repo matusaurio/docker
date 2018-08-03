@@ -1,5 +1,5 @@
 # In FROM we type mysql:5.7. I also used recommended references of https://hub.docker.com/_/mysql/
- FROM mysql
+ FROM mysql:5.6
  # In MAINTAINER we can specify the creator and that keeps this dockerfile version.
  MAINTAINER Santiago Benalcazar <santiagosdbc@gmail.com>
  # In ADD we type the local of sql dump file to add in container
